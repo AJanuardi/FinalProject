@@ -1,0 +1,11 @@
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@{
+    var x = ViewBag.emp;
+    foreach (var i in x)
+    {
+    @i.name
+    }
+}
