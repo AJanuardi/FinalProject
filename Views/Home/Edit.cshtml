@@ -1,0 +1,8 @@
+@{
+    var x = ViewBag.reminder;
+<form method="POST">
+    <input id="name" name="name" value="@x.name">
+    <input type="datetime" id="events" name="events" value="@x.events">
+    <button asp-action="Editor" asp-controller="Home" class="btn btn-success">Edit</button>
+</form>
+}

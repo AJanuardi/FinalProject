@@ -1,0 +1,11 @@
+@{
+    var x = ViewBag.reminder;
+    foreach (var i in x)
+    {
+        @i.name
+        @i.events
+        <a href="/Home/Edit/@i.id" class="btn btn-primary">Edit</a>
+        <a href="/Home/Delete/@i.id" class="btn btn-danger">Delete</a>
+    }
+}
+<a href="/Home/Data" class="btn btn-primary">Add</a>

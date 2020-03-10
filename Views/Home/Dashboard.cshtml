@@ -1,0 +1,120 @@
+
+<a href="/Home/Reminder" class="btn btn-success">
+<span><img src="/images/plus.svg" width="20px" height="20px"></span>
+ Reminder Management
+</a>
+<br>
+<br>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card border-success">
+            <div class="card-header bg-success" style="text-align: center;">
+                <b>Total Employees</b>
+            </div>
+            <div class="card-body">
+                 @{
+                var x = ViewBag.emp;
+                var y = ViewBag.male;
+                var z = ViewBag.female;
+                <h1 class="card-title" style="text-align: center;"><b>@x</b></h1>
+                <p class="card-text" style="text-align: center;">@y males / @z females</p>
+                }
+            </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-warning">
+            <div class="card-header bg-warning" style="text-align: center;">
+                <b>Out Today</b>
+            </div>
+            <div class="card-body">
+                @{
+                var k = ViewBag.outcount;
+                <h1 class="card-title" style="text-align: center;">@k</h1>
+                <p class="card-text" style="text-align: center;">employees</p>
+                }
+            </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-success">
+            <div class="card-header bg-success" style="text-align: center;">
+                <b>Today Presents</b>
+            </div>
+            <div class="card-body">
+                @{
+                var l = ViewBag.abs;
+                <h1 class="card-title" style="text-align: center;">@l / @x</h1>
+                <p class="card-text" style="text-align: center;">employees</p>
+                }
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<br>
+<br>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card border-primary">
+            <div class="card-header bg-primary" style="text-align: center;">
+                <b>Upcoming Events</b>
+            </div>
+            <div class="card-body">
+                @{
+                var n = ViewBag.reminders;
+                foreach (var i in n)
+                {
+                <div class="container">
+                <div class="row">
+                        <div class="col-md-2" style="text-align: left;">
+                            <img src="/images/Calendar.svg" width="15px" height="15px">
+                        </div>
+                        <div class="col-md-4" style="text-align: left;">
+                            <h6 class="card-title">@i.name</h6>
+                        </div>
+                        <div class="col-md-6" style="text-align: right;">
+                            <h6 class="card-title">@i.events.DayOfWeek, @i.events.ToShortDateString()</h6>
+                        </div>
+                    </div>
+                </div>   
+                }
+                
+                }
+            </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card border-primary">
+            <div class="card-header bg-primary" style="text-align: center;">
+                <b>New Applicants</b>
+            </div>
+            <div class="card-body">
+                @{
+                var m = ViewBag.apply;
+                foreach (var i in m)
+                {
+                <div class="container">
+                <div class="row">
+                        <div class="col-md-2" style="text-align: left;">
+                            <img src="/images/user.svg" width="15px" height="15px">
+                        </div>
+                        <div class="col-md-4" style="text-align: left;">
+                            <h6 class="card-title">@i.name</h6>
+                        </div>
+                        <div class="col-md-6" style="text-align: right;">
+                            <h6 class="card-title">@i.apply</h6>
+                        </div>
+                    </div>
+                </div>
+                }
+                }
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
