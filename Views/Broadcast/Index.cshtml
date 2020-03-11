@@ -1,15 +1,45 @@
-<form method="POST" asp-action="Add" asp-controler="Broadcast">
-<input type="text" placeholder="Title" id="title" name="title">
-<input type="text" placeholder="Body" id="body" name="body">
-<input type="submit">
-</form>
+<div class="text-center">
+<h1>Broadcast System</h1>
+<p>Be Carefuly to Send Any Confidential Information</p>
+</div>
+<br>
+<div class="container">
+    <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+            <form method="POST" asp-action="Add" asp-controller="Broadcast">
+            <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="">Broadcast Messenger</span>
+            </div>
+            <input type="text" class="form-control" placeholder="Title" id="title" name="title" style="width: 50px;">
+            <input type="text" class="form-control" placeholder="Body" id="body" name="body">
+            <button type="submit" class="btn btn-primary">Send</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+<br>
+<br>
 
 @{
     var x = ViewBag.broad;
     foreach (var i in x)
     {
-        @i.title
-        @i.date
-        @i.body
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card border-primary">
+                    <div class="card-header">@i.date</div>
+                    <div class="card-body text-primary">
+                        <h5 class="card-title">@i.title</h5>
+                        <p class="card-text">@i.body</p>
+                    </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+            <br>
     }
 }

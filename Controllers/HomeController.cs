@@ -96,7 +96,7 @@ namespace HR_App.Controllers
             ViewBag.count = s;
             var x = from i in _appdbcontext.leaves select i;
             ViewBag.outemp = x;
-            var y = (from i in _appdbcontext.leaves select i).Count();
+            var y = (from i in _appdbcontext.leaves where (DateTime.Now >= i.outtime  && i.status == "Approve" && DateTime.Now < i.intime) select i).Count();
             ViewBag.outcount = y;
             var z = (from i in _appdbcontext.employees where i.gender == "male" select i).Count();
             ViewBag.male = z;

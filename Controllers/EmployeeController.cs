@@ -33,6 +33,7 @@ namespace HR_App.Controllers
         [Authorize]
         public IActionResult Index(string search, int _crntpage=1)
         {
+            ViewBag.search = search;
             var y = (from i in _appdbcontext.leaves where i.status == "submitted" select i).Count();
             ViewBag.count = y;
             var z = _appdbcontext.pagings.Find(1);
@@ -43,19 +44,30 @@ namespace HR_App.Controllers
                 if (search != null)
                 {
                     var take = z.ShowItem;
-                    var x = from i in _appdbcontext.employees where (i.name.Contains(search) || i.position.Contains(search) || i.department.Contains(search) || i.status.Contains(search)) select i;
-                    var get = from a in x.Skip(take*(z.CurrentPage - 1)).Take(take) select a;
+                    var x = from i in _appdbcontext.employees where (i.name.Contains(search) || i.position.Contains(search) || i.department.Contains(search) || i.status.Contains(search) && i.status=="Probation") select i;
+                    var k = from i in _appdbcontext.employees where (i.name.Contains(search) || i.position.Contains(search) || i.department.Contains(search) || i.status.Contains(search) && i.status=="Contract") select i;
+                    var l = from i in _appdbcontext.employees where (i.name.Contains(search) || i.position.Contains(search) || i.department.Contains(search) || i.status.Contains(search) && i.status=="Permanent") select i;
+                    var get = from a in x.Take(take) select a;
+                    var get1 = from a in k.Take(take) select a;
+                    var get2 = from a in l.Take(take) select a;
                     ViewBag.emp = get;
+                    ViewBag.emp1 = get1;
+                    ViewBag.emp2 = get2;
                     ViewBag.page = z;
                     return View();
                 }
                 else
                 {
                     var take = z.ShowItem;
-                    var x = from i in _appdbcontext.employees select i;
-                    ViewBag.emp = x;
-                    var get = from a in x.Skip(take*(z.CurrentPage - 1)).Take(take) select a;
+                    var x = from i in _appdbcontext.employees where (i.status == "Probation") select i;
+                    var k = from i in _appdbcontext.employees where (i.status == "Contract") select i;
+                    var l = from i in _appdbcontext.employees where (i.status == "Permanent") select i;
+                    var get = from a in x.Take(take) select a;
+                    var get1 = from a in k.Take(take) select a;
+                    var get2 = from a in l.Take(take) select a;
                     ViewBag.emp = get;
+                    ViewBag.emp1 = get1;
+                    ViewBag.emp2 = get2;
                     ViewBag.page = z;
                     return View();
                 }
@@ -65,19 +77,35 @@ namespace HR_App.Controllers
                 if (search != null)
                 {
                     var take = z.ShowItem;
-                    var x = from i in _appdbcontext.employees where (i.name.Contains(search) || i.position.Contains(search) || i.department.Contains(search) || i.status.Contains(search)) select i;
-                    var get = from a in x.Skip(take*(z.CurrentPage - 1)).Take(take) select a;
+                    var x = from i in _appdbcontext.employees where (i.name.Contains(search) || i.position.Contains(search) || i.department.Contains(search) || i.status.Contains(search) && i.status=="Probation") select i;
+                    var k = from i in _appdbcontext.employees where (i.name.Contains(search) || i.position.Contains(search) || i.department.Contains(search) || i.status.Contains(search) && i.status=="Contract") select i;
+                    var l = from i in _appdbcontext.employees where (i.name.Contains(search) || i.position.Contains(search) || i.department.Contains(search) || i.status.Contains(search) && i.status=="Permanent") select i;
+                    var get = from a in x.Skip(take*(z.CurrentPage-1)).Take(take) select a;
+                    var get1 = from a in k.Skip(take*(z.CurrentPage-1)).Take(take) select a;
+                    var get2 = from a in l.Skip(take*(z.CurrentPage-1)).Take(take) select a;
                     ViewBag.emp = get;
+                    ViewBag.emp1 = get1;
+                    ViewBag.emp2 = get2;
                     ViewBag.page = z;
                     return View();
                 }
                 else
                 {
                     var take = z.ShowItem;
-                    var x = from i in _appdbcontext.employees select i;
+                    var x = (from i in _appdbcontext.employees where (i.status == "Probation") select i).Skip(take*(z.CurrentPage-1)).Take(take);
+                    var k = (from i in _appdbcontext.employees where (i.status == "Permanent") select i).Skip(take*(z.CurrentPage-1)).Take(take);
+                    var l = (from i in _appdbcontext.employees where (i.status == "Contract") select i).Skip(take*(z.CurrentPage-1)).Take(take);
+                    foreach (var i in x)
+                    {
+                        Console.WriteLine(i.name);
+                    }
+                    foreach (var i in k)
+                    {
+                        Console.WriteLine(i.name);
+                    }
                     ViewBag.emp = x;
-                    var get = from a in x.Skip(take*(z.CurrentPage - 1)).Take(take) select a;
-                    ViewBag.emp = get;
+                    ViewBag.emp1 = l;
+                    ViewBag.emp2 = k;
                     ViewBag.page = z;
                     return View();
                 }
