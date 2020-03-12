@@ -66,7 +66,7 @@ namespace HR_App.Controllers
                 {
                     emailClient.ServerCertificateValidationCallback = (s, c, h, e) => true;
                     emailClient.Connect("smtp.mailtrap.io", 587, false);
-                    emailClient.Authenticate("c2dd5c9169381f", "8d33632650e24e");
+                    emailClient.Authenticate("e9bc7468600966", "089a1123f99e29");
                     emailClient.Send(message);
                     emailClient.Disconnect(true);
                 }

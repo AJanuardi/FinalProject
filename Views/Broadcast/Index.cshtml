@@ -3,23 +3,38 @@
 <p>Be Carefuly to Send Any Confidential Information</p>
 </div>
 <br>
-<div class="container">
-    <div class="row">
-        <div class="col-md-2"></div>
-        <div class="col-md-8">
             <form method="POST" asp-action="Add" asp-controller="Broadcast">
-            <div class="input-group">
-            <div class="input-group-prepend">
-                <span class="input-group-text" id="">Broadcast Messenger</span>
+            <div class="form-group">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-4"></div>
+                        <div class="col-md-4" style="text-align: center;">
+                            <label for="title"><b>Title</b></label>
+                            <input type="text" class="form-control" id="title" name="title" placeholder="Title">
+                        </div>
+                    </div>
+                </div>
             </div>
-            <input type="text" class="form-control" placeholder="Title" id="title" name="title" style="width: 50px;">
-            <input type="text" class="form-control" placeholder="Body" id="body" name="body">
-            <button type="submit" class="btn btn-primary">Send</button>
+            <div class="form-group">
+                 <div class="container">
+                    <div class="row">
+                        <div class="col-md-2"></div>
+                        <div class="col-md-8" style="text-align: center;">
+                            <label for="title"><b>Body</b></label>
+                            <input type="text" class="form-control" id="body" name="body" placeholder="Message">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4"></div>
+                    <div class="col-md-4" style="text-align: center;">
+                        <button type="submit" class="btn btn-primary">Send Broadcast</button>
+                    </div>
+                </div>
             </div>
             </form>
-        </div>
-    </div>
-</div>
 <br>
 <br>
 

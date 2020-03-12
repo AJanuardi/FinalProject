@@ -326,7 +326,7 @@ namespace HR_App.Controllers
                 {
                     emailClient.ServerCertificateValidationCallback = (s, c, h, e) => true;
                     emailClient.Connect("smtp.mailtrap.io", 587, false);
-                    emailClient.Authenticate("c2dd5c9169381f", "8d33632650e24e");
+                    emailClient.Authenticate("e9bc7468600966", "089a1123f99e29");
                     emailClient.Send(message);
                     emailClient.Disconnect(true);
                 }
@@ -334,36 +334,59 @@ namespace HR_App.Controllers
         }
 
         [Authorize]
-        public IActionResult Editor(Guid id, string name, string email, IFormFile photo, string phone, string gender, DateTime bhirtdate, string bhirtplace, string position, string department, string address, string nameugd1, string nameugd2, string nameugd3, string emergency1, string emergency2, string emergency3, string status, DateTime contract)
+        public IActionResult Editor(Guid id, string name, string email, IFormFile photo, string phone, string gender, DateTime date, string place, string position, string department, string address, string nameugd1, string nameugd2, string nameugd3, string emergency1, string emergency2, string emergency3, string status, DateTime contract)
         {
-            var path = "wwwroot//images";
-            Directory.CreateDirectory(path);
-            var FileName= Path.Combine(path, Path.GetFileName(photo.FileName));
-            photo.CopyTo(new FileStream(FileName, FileMode.Create));
-            var file = FileName.Substring(8).Replace(@"\","/");
-            var i = from y in _appdbcontext.employees where y.id == id select y;
-            foreach (var x in i)
+            Console.WriteLine(id);
+            if ( photo != null)
             {
-                x.name = name;
-                x.email = email;
-                x.photo = file;
-                x.phone = phone;
-                x.gender = gender;
-                x.bhirtdate = bhirtdate;
-                x.bhirtplace = bhirtplace;
-                x.position = position;
-                x.department = department;
-                x.address = address;
-                x.nameugd1 = nameugd1;
-                x.nameugd2 = nameugd2;
-                x.nameugd3 = nameugd3;
-                x.emergency1 = emergency1;
-                x.emergency2 = emergency2;
-                x.emergency3 = emergency3;
-                x.status = status;
-                x.contract = contract;
+                var path = "wwwroot//images";
+                Directory.CreateDirectory(path);
+                var FileName= Path.Combine(path, Path.GetFileName(photo.FileName));
+                photo.CopyTo(new FileStream(FileName, FileMode.Create));
+                var file = FileName.Substring(8).Replace(@"\","/");
+                var i = _appdbcontext.employees.Find(id);
+                    i.name = name;
+                    i.email = email;
+                    i.photo = file;
+                    i.phone = phone;
+                    i.gender = gender;
+                    i.bhirtdate = date;
+                    i.bhirtplace = place;
+                    i.position = position;
+                    i.department = department;
+                    i.address = address;
+                    i.nameugd1 = nameugd1;
+                    i.nameugd2 = nameugd2;
+                    i.nameugd3 = nameugd3;
+                    i.emergency1 = emergency1;
+                    i.emergency2 = emergency2;
+                    i.emergency3 = emergency3;
+                    i.status = status;
+                    i.contract = contract;
+                _appdbcontext.SaveChanges();
             }
-            _appdbcontext.SaveChanges();
+            else if (photo == null)
+            {
+                var i = _appdbcontext.employees.Find(id);
+                    i.name = name;
+                    i.email = email;
+                    i.phone = phone;
+                    i.gender = gender;
+                    i.bhirtdate = date;
+                    i.bhirtplace = place;
+                    i.position = position;
+                    i.department = department;
+                    i.address = address;
+                    i.nameugd1 = nameugd1;
+                    i.nameugd2 = nameugd2;
+                    i.nameugd3 = nameugd3;
+                    i.emergency1 = emergency1;
+                    i.emergency2 = emergency2;
+                    i.emergency3 = emergency3;
+                    i.status = status;
+                    i.contract = contract;
+                    _appdbcontext.SaveChanges();
+            }
             return RedirectToAction("Index");
         }
 

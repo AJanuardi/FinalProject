@@ -19,22 +19,19 @@ public class BhirtdayService : IHostedService
         public Task StartAsync(CancellationToken cancellationToken)
         {
             Console.WriteLine("Start");
-            using (var scope = _scopeFactory.CreateScope())
-            {
-                var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-                var x = from i in context.employees select i;
-                foreach (var i in x)
-                {
-                    if (i.bhirtdate.Month == DateTime.Now.Month && i.bhirtdate.Day == DateTime.Now.Day)
-                    {
-                        Task.Run(TaskRoutine, cancellationToken);
-                    }
-                    else
-                    {
-                        Task.Run(Dont, cancellationToken);
-                    }
-                }
-            }
+            // using (var scope = _scopeFactory.CreateScope())
+            // {
+            //     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            //     var x = (from i in context.employees select i).FirstOrDefault();
+            //         if (x.bhirtdate.Month == DateTime.Now.Month && x.bhirtdate.Day == DateTime.Now.Day)
+            //         {
+            //             Task.Run(TaskRoutine, cancellationToken);
+            //         }
+            //         else
+            //         {
+            //             Task.Run(Dont, cancellationToken);
+            //         }
+            // }
             return Task.CompletedTask;
         }
 
@@ -69,7 +66,7 @@ public class BhirtdayService : IHostedService
                 {
                     emailClient.ServerCertificateValidationCallback = (s, c, h, e) => true;
                     emailClient.Connect("smtp.mailtrap.io", 587, false);
-                    emailClient.Authenticate("c2dd5c9169381f", "8d33632650e24e");
+                    emailClient.Authenticate("e9bc7468600966", "089a1123f99e29");
                     emailClient.Send(message);
                     emailClient.Disconnect(true);
                 }

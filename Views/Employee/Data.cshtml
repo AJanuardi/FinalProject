@@ -43,13 +43,6 @@
 </div>
 <br>
 
-<form method="POST" enctype="multipart/form-data">
-<button asp-action="Add" asp-controller="Employee" class="btn btn-success">Save</button>
-<button asp-action="AddNew" asp-controller="Employee" class="btn btn-success">Save & Add New</button>
-<button type="button" class="btn btn-primary" onclick="window.location.href ='/Employee'">Cancel</button>
-<br>
-<br>
-
 <div class="w3-sidebar w3-bar-block w3-black w3-card" style="width:130px; height: 275px">
   <h5 class="w3-bar-item">Biodata</h5>
   <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Fade')">Profile</button>
@@ -58,6 +51,20 @@
   <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Top')">Emergency</button>
   <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Bottom')">Aggrements</button>
 </div>
+
+<form method="POST" enctype="multipart/form-data">
+<div class="container">
+  <div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-6">
+    <button asp-action="Add" asp-controller="Employee" class="btn btn-success">Save</button>
+    <button asp-action="AddNew" asp-controller="Employee" class="btn btn-success">Save & Add New</button>
+    <button type="button" class="btn btn-primary" onclick="window.location.href ='/Employee'">Cancel</button>
+    </div>
+  </div>
+</div>
+<br>
+<br>
 
 <div style="margin-left:170px">
   <div class="w3-padding"><b>Fill this form completely and correct</b></div>
@@ -92,8 +99,17 @@
         <input class="form-control" placeholder="Phone" id="phone" name="phone" required>
       </div>
       <div class="col">
+        <br>
         <label>Gender</label>
-        <input class="form-control" placeholder="Gender" id="gender" name="gender" required>
+        <br>
+        <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="gender" id="gender1" value="Male">
+        <label class="form-check-label" for="gender1">Male</label>
+        </div>
+        <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="gender" id="gender2" value="Female">
+        <label class="form-check-label" for="gender2">Female</label>
+        </div>
       </div>
     </div>
     <br>
@@ -115,11 +131,19 @@
     <div class="row">
       <div class="col">
         <label>Position</label>
-        <input class="form-control" placeholder="Position" id="position" name="position" required>
+        <select id="position" name="position" class="form-control" required>
+          <option value="Junior Programmer">Junior Programmer</option>
+          <option value="Senior Programmer">Senior Programmer</option>
+          <option value="Junior QC">Junior QC</option>
+          <option value="Senior QC">Senior QC</option>
+        </select>
       </div>
       <div class="col">
         <label>Department</label>
-        <input class="form-control" placeholder="Department" id="department" name="department" required>
+        <select id="department" name="department" class="form-control" required>
+          <option value="Strategic Planner Officer">Strategic Planner Officer</option>
+          <option value="Quality Control">Quality Control</option>
+        </select>
       </div>
     </div>
   </div>
@@ -180,7 +204,11 @@
       </div>
       <div class="col">
         <label>Status Employee</label>
-        <input class="form-control" class="status" placeholder="Status" id="status" name="status" required>
+        <select id="status" name="status" class="form-control" required>
+          <option value="Probation">Probation</option>
+          <option value="Contract">Contract</option>
+          <option value="Permanent">Permanent</option>
+        </select>
       </div>
     </div>
   </div>

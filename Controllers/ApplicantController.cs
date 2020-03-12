@@ -28,6 +28,7 @@ namespace HR_App.Controllers
         [Authorize]
         public IActionResult Index(string search, int _crntpage=1)
         {
+            ViewBag.search = search;
             var y = (from i in _appdbcontext.leaves where i.status == "submitted" select i).Count();
             ViewBag.count = y;
             var z = _appdbcontext.pagings.Find(1);
@@ -38,19 +39,30 @@ namespace HR_App.Controllers
                 if (search != null)
                 {
                     var take = z.ShowItem;
-                    var x = from i in _appdbcontext.applicants where (i.name.Contains(search) ||  i.status.Contains(search)) select i;
-                    var get = from a in x.Skip(take*(z.CurrentPage - 1)).Take(take) select a;
-                    ViewBag.app = get;
+                    var x = from i in _appdbcontext.applicants where (i.name.Contains(search) || i.status.Contains(search) && i.status=="unprocessed") select i;
+                    var k = from i in _appdbcontext.applicants where (i.name.Contains(search) || i.status.Contains(search) && i.status=="psychotest") select i;
+                    var l = from i in _appdbcontext.applicants where (i.name.Contains(search) || i.status.Contains(search) && i.status=="interview") select i;
+                    var get = from a in x.Take(take) select a;
+                    var get1 = from a in k.Take(take) select a;
+                    var get2 = from a in l.Take(take) select a;
+                    ViewBag.emp = get;
+                    ViewBag.emp1 = get1;
+                    ViewBag.emp2 = get2;
                     ViewBag.page = z;
                     return View();
                 }
                 else
                 {
                     var take = z.ShowItem;
-                    var x = from i in _appdbcontext.applicants select i;
-                    ViewBag.emp = x;
-                    var get = from a in x.Skip(take*(z.CurrentPage - 1)).Take(take) select a;
-                    ViewBag.app = get;
+                    var x = from i in _appdbcontext.applicants where (i.status == "unprocessed") select i;
+                    var k = from i in _appdbcontext.applicants where (i.status == "psychotest") select i;
+                    var l = from i in _appdbcontext.applicants where (i.status == "interview") select i;
+                    var get = from a in x.Take(take) select a;
+                    var get1 = from a in k.Take(take) select a;
+                    var get2 = from a in l.Take(take) select a;
+                    ViewBag.emp = get;
+                    ViewBag.emp1 = get1;
+                    ViewBag.emp2 = get2;
                     ViewBag.page = z;
                     return View();
                 }
@@ -60,19 +72,27 @@ namespace HR_App.Controllers
                 if (search != null)
                 {
                     var take = z.ShowItem;
-                    var x = from i in _appdbcontext.applicants where (i.name.Contains(search) ||  i.status.Contains(search)) select i;
-                    var get = from a in x.Skip(take*(z.CurrentPage - 1)).Take(take) select a;
-                    ViewBag.app = get;
+                    var x = from i in _appdbcontext.applicants where (i.name.Contains(search) || i.status.Contains(search) && i.status=="unprocessed") select i;
+                    var k = from i in _appdbcontext.applicants where (i.name.Contains(search) || i.status.Contains(search) && i.status=="psychotest") select i;
+                    var l = from i in _appdbcontext.applicants where (i.name.Contains(search) || i.status.Contains(search) && i.status=="interview") select i;
+                    var get = from a in x.Skip(take*(z.CurrentPage-1)).Take(take) select a;
+                    var get1 = from a in k.Skip(take*(z.CurrentPage-1)).Take(take) select a;
+                    var get2 = from a in l.Skip(take*(z.CurrentPage-1)).Take(take) select a;
+                    ViewBag.emp = get;
+                    ViewBag.emp1 = get1;
+                    ViewBag.emp2 = get2;
                     ViewBag.page = z;
                     return View();
                 }
                 else
                 {
                     var take = z.ShowItem;
-                    var x = from i in _appdbcontext.applicants select i;
+                    var x = (from i in _appdbcontext.applicants where (i.status == "unprocessed") select i).Skip(take*(z.CurrentPage-1)).Take(take);
+                    var k = (from i in _appdbcontext.applicants where (i.status == "psychotest") select i).Skip(take*(z.CurrentPage-1)).Take(take);
+                    var l = (from i in _appdbcontext.applicants where (i.status == "interview") select i).Skip(take*(z.CurrentPage-1)).Take(take);
                     ViewBag.emp = x;
-                    var get = from a in x.Skip(take*(z.CurrentPage - 1)).Take(take) select a;
-                    ViewBag.app = get;
+                    ViewBag.emp1 = k;
+                    ViewBag.emp2 = l;
                     ViewBag.page = z;
                     return View();
                 }
@@ -138,7 +158,8 @@ namespace HR_App.Controllers
                     address = x.address,
                     bhirtdate = x.bhirtdate,
                     bhirtplace = x.bhirtplace,
-                    gender = x.gender
+                    gender = x.gender,
+                    status = "Probation"
                 };
                 _appdbcontext.employees.Add(employee);
                 _appdbcontext.SaveChanges();
@@ -157,37 +178,85 @@ namespace HR_App.Controllers
         }
 
         [Authorize]
-        public IActionResult Editor(Guid id, string name, string email, IFormFile photo, IFormFile cv, string phone, string gender, DateTime bhirtdate, string bhirtplace, string position, string department, string address)
+        public IActionResult Editor(Guid id, string name, string email, IFormFile photo, IFormFile cv, string phone, string gender, DateTime date, string place, string position, string department, string address)
         {
+            if (photo != null && cv != null)
+            {
             var path1 = "wwwroot//cv";
             Directory.CreateDirectory(path1);
             var FileName1= Path.Combine(path1, Path.GetFileName(cv.FileName));
-            photo.CopyTo(new FileStream(FileName1, FileMode.Create));
+            cv.CopyTo(new FileStream(FileName1, FileMode.Create));
             var file1 = FileName1.Substring(8).Replace(@"\","/");
             var path = "wwwroot//images";
             Directory.CreateDirectory(path);
             var FileName= Path.Combine(path, Path.GetFileName(photo.FileName));
             photo.CopyTo(new FileStream(FileName, FileMode.Create));
             var file = FileName.Substring(8).Replace(@"\","/");
-            var i = from y in _appdbcontext.applicants where y.id == id select y;
-            foreach (var x in i)
-            {
-                x.name = name;
-                x.email = email;
-                x.photo = file;
-                x.phone = phone;
-                x.gender = gender;
-                x.bhirtdate = bhirtdate;
-                x.bhirtplace = bhirtplace;
-                x.address = address;
-                x.status = "unprocessed";
-            }
+            var i = _appdbcontext.applicants.Find(id);
+                i.name = name;
+                i.email = email;
+                i.photo = file;
+                i.cv = file1;
+                i.phone = phone;
+                i.gender = gender;
+                i.bhirtdate = date;
+                i.bhirtplace = place;
+                i.address = address;
             _appdbcontext.SaveChanges();
+            }
+            else if (photo == null && cv != null)
+            {
+            var path1 = "wwwroot//cv";
+            Directory.CreateDirectory(path1);
+            var FileName1= Path.Combine(path1, Path.GetFileName(cv.FileName));
+            cv.CopyTo(new FileStream(FileName1, FileMode.Create));
+            var file1 = FileName1.Substring(8).Replace(@"\","/");
+            var i = _appdbcontext.applicants.Find(id);
+                i.name = name;
+                i.email = email;
+                i.cv = file1;
+                i.phone = phone;
+                i.gender = gender;
+                i.bhirtdate = date;
+                i.bhirtplace = place;
+                i.address = address;
+            _appdbcontext.SaveChanges();
+            }
+            else if (photo != null && cv == null)
+            {
+            var path = "wwwroot//images";
+            Directory.CreateDirectory(path);
+            var FileName= Path.Combine(path, Path.GetFileName(photo.FileName));
+            photo.CopyTo(new FileStream(FileName, FileMode.Create));
+            var file = FileName.Substring(8).Replace(@"\","/");
+            var i = _appdbcontext.applicants.Find(id);
+                i.name = name;
+                i.email = email;
+                i.photo = file;
+                i.phone = phone;
+                i.gender = gender;
+                i.bhirtdate = date;
+                i.bhirtplace = place;
+                i.address = address;
+            _appdbcontext.SaveChanges();
+            }
+            else if (photo == null && cv == null)
+            {
+            var i = _appdbcontext.applicants.Find(id);
+                i.name = name;
+                i.email = email;
+                i.phone = phone;
+                i.gender = gender;
+                i.bhirtdate = date;
+                i.bhirtplace = place;
+                i.address = address;
+                _appdbcontext.SaveChanges();
+            }
             return RedirectToAction("Index");
         }
 
         [Authorize]
-        public IActionResult AddNew(string name, string email, IFormFile photo, IFormFile cv, string phone, string gender, DateTime bhirtdate, string bhirtplace, string position, string department, string address)
+        public IActionResult AddNew(string name, string email, IFormFile photo, IFormFile cv, string phone, string gender, DateTime date, string place, string position, string department, string address)
         {
                 var path1 = "wwwroot//cv";
                 Directory.CreateDirectory(path1);
@@ -207,10 +276,11 @@ namespace HR_App.Controllers
                     email = email,
                     phone = phone,
                     gender = gender,
-                    bhirtdate = bhirtdate,
-                    bhirtplace = bhirtplace,
+                    bhirtdate = date,
+                    bhirtplace = place,
                     address = address,
-                    status = "unprocessed"
+                    status = "unprocessed",
+                    apply = DateTime.Now
                 };
                 _appdbcontext.applicants.Add(data);
                 _appdbcontext.SaveChanges();
@@ -218,7 +288,7 @@ namespace HR_App.Controllers
         }
 
         [Authorize]
-        public IActionResult Add(string name, string email, IFormFile photo, IFormFile cv, string phone, string gender, DateTime bhirtdate, string bhirtplace, string position, string department, string address)
+        public IActionResult Add(string name, string email, IFormFile photo, IFormFile cv, string phone, string gender, DateTime date, string place, string position, string department, string address)
         {
                 var path1 = "wwwroot//cv";
                 Directory.CreateDirectory(path1);
@@ -238,10 +308,11 @@ namespace HR_App.Controllers
                     email = email,
                     phone = phone,
                     gender = gender,
-                    bhirtdate = bhirtdate,
-                    bhirtplace = bhirtplace,
+                    bhirtdate = date,
+                    bhirtplace = place,
                     address = address,
-                    status = "unprocessed"
+                    status = "unprocessed",
+                    apply = DateTime.Now
                 };
                 _appdbcontext.applicants.Add(data);
                 _appdbcontext.SaveChanges();

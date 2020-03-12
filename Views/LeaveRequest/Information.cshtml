@@ -49,12 +49,17 @@
   <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Fade')">Form</button>
 </div>
 
+@{
+    var x = ViewBag.emp;
+    foreach (var i in x)
+    {
 <form method="POST" enctype="multipart/form-data">
 <div class="container">
   <div class="row">
     <div class="col-md-2"></div>
     <div class="col-md-6">
-    <button asp-action="Added" asp-controller="LeaveRequest" class="btn btn-success">Send</button>
+    <button asp-action="Allow" asp-controller="LeaveRequest" class="btn btn-success">Approve</button>
+    <button asp-action="Reject" asp-controller="LeaveRequest" class="btn btn-danger">Reject</button>
     <button type="button" class="btn btn-primary" onclick="window.location.href ='/LeaveRequest'">Cancel</button>
     </div>
   </div>
@@ -70,18 +75,18 @@
     <div class="row">
       <div class="col">
         <label>Full Name</label>
-        <input class="form-control" placeholder="Name" id="name" name="name" required>
+        <input class="form-control" placeholder="Name" id="name" name="name" value="@i.name" readonly>
       </div>
       <div class="col">
         <label>Position</label>
-        <input class="form-control" placeholder="Position" id="position" name="position" required>
+        <input class="form-control" placeholder="Position" id="position" name="position" value="@i.position" readonly>
       </div>
     </div>
     <br>
     <div class="row">
       <div class="col">
         <label>Department</label>
-        <input class="form-control" placeholder="Department" id="department" name="department" required>
+        <input class="form-control" placeholder="Department" id="department" name="department" value="@i.department" readonly>
       </div>
     </div>
     <br>
@@ -89,16 +94,24 @@
     <div class="row">
       <div class="col">
         <label>Outtime</label>
-        <input class="form-control" type="date" placeholder="date" id="outtime" name="outtime" required>
+        @{
+        var dates = @i.outtime.ToString("yyyy")+"-"+@i.outtime.ToString("MM")+"-"+@i.outtime.ToString("dd");
+        }
+        <input class="form-control" type="date" placeholder="date" id="outtime" name="outtime" value="@dates" readonly>
       </div>
       <div class="col">
         <label>Intime</label>
-        <input class="form-control" type="date" placeholder="date" id="intime" name="intime" required>
+        @{
+        var dates1 = @i.outtime.ToString("yyyy")+"-"+@i.outtime.ToString("MM")+"-"+@i.outtime.ToString("dd");
+        }
+        <input class="form-control" type="date" placeholder="date" id="intime" name="intime" value="@dates1" readonly>
       </div>
   </div>
 </div>
 <br>
 </form>
+}
+}
 
 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>

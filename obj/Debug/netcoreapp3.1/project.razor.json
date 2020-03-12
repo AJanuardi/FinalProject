@@ -20611,6 +20611,11 @@
       "FileKind": "mvc"
     },
     {
+      "FilePath": "d:\\Users\\bsi50130\\Downloads\\FinalProject-1.1.0\\FinalProject-1.0.0\\Views\\LeaveRequest\\Information.cshtml",
+      "TargetPath": "Views\\LeaveRequest\\Information.cshtml",
+      "FileKind": "mvc"
+    },
+    {
       "FilePath": "d:\\Users\\bsi50130\\Downloads\\FinalProject-1.1.0\\FinalProject-1.0.0\\Views\\Employee\\Edit.cshtml",
       "TargetPath": "Views\\Employee\\Edit.cshtml",
       "FileKind": "mvc"

@@ -6,6 +6,7 @@ using MimeKit;
 using HR_App.Data;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
+using System.Collections.Generic;
 
 namespace HR_App.Scheduler
 {
@@ -19,22 +20,19 @@ public class ReminderService : IHostedService
         public Task StartAsync(CancellationToken cancellationToken)
         {
             Console.WriteLine("Start");
-            using (var scope = _scopeFactory.CreateScope())
-            {
-                var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-                var x = from i in context.reminders select i;
-                foreach (var i in x)
-                {
-                    if (i.events.Month == DateTime.Now.Month && i.events.AddDays(-3).Day == DateTime.Now.AddDays(-3).Day)
-                    {
-                        Task.Run(TaskRoutine, cancellationToken);
-                    }
-                    else
-                    {
-                        Task.Run(Dont, cancellationToken);
-                    }
-                }
-            }
+            // using (var scope = _scopeFactory.CreateScope())
+            // {
+            //     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            //     var x = (from i in context.reminders select i).FirstOrDefault();
+            //         if (x.events.Month == DateTime.Now.Month && x.events.AddDays(-3).Day == DateTime.Now.Day)
+            //         {
+            //             Task.Run(TaskRoutine, cancellationToken);
+            //         }
+            //         else
+            //         {
+            //             Task.Run(Dont, cancellationToken);
+            //         }
+            // }
             return Task.CompletedTask;
         }
 
@@ -53,24 +51,35 @@ public class ReminderService : IHostedService
                 {
                 var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
                 var x = from i in context.employees select i;
-                var evt = (from i in context.reminders where i.events.AddDays(-3).Day == DateTime.Now.AddDays(-3).Day select i).FirstOrDefault(); 
+                var evt = (from i in context.reminders where i.events.AddDays(-3).Day == DateTime.Now.Day select i);
+                List<string> nameReminder = new List<string>();
+                List<DateTime> dateReminder = new List<DateTime>();
+                foreach(var i in evt)
+                {
+                    nameReminder.Add(i.name);
+                    dateReminder.Add(i.events);
+                }
+                for(int k=0;k<nameReminder.Count();k++)
+                { 
                 foreach (var i in x)
                 {
+                Console.WriteLine("Masuk");
                 var message = new MimeMessage();
                 message.To.Add(new MailboxAddress(i.name, i.email));
                 message.From.Add(new MailboxAddress("HR","HRAPP@hr.com"));
-                message.Subject = "Selamat Hari "+evt.name;
+                message.Subject = "Selamat Hari "+ nameReminder[k];
                 message.Body = new TextPart("plain")
                 {
-                    Text = "Dalam memperingati Hari "+evt.name+" maka perusahaan akan di Liburkan pada tanggal "+evt.events
+                    Text = "Dalam memperingati Hari "+nameReminder[k]+" maka perusahaan akan di Liburkan pada tanggal "+dateReminder[k]
                 };
                 using (var emailClient = new MailKit.Net.Smtp.SmtpClient())
                 {
                     emailClient.ServerCertificateValidationCallback = (s, c, h, e) => true;
                     emailClient.Connect("smtp.mailtrap.io", 587, false);
-                    emailClient.Authenticate("c2dd5c9169381f", "8d33632650e24e");
+                    emailClient.Authenticate("e9bc7468600966", "089a1123f99e29");
                     emailClient.Send(message);
                     emailClient.Disconnect(true);
+                }
                 }
                 }
                 }
