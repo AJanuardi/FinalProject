@@ -63,7 +63,7 @@
           <div class="col-md-2"></div>
           <div class="col-md-6">
               <button asp-action="Editor" asp-controller="Applicant" class="btn btn-success">Save</button>
-              <button type="button" class="btn btn-primary" onclick="window.location.href ='/Employee'">Cancel</button>
+              <button type="button" class="btn btn-primary" onclick="window.location.href ='/Applicant'">Cancel</button>
           </div>
       </div>
   </div>
@@ -172,6 +172,11 @@
         <br>
         <label>Address</label>
         <input class="form-control" placeholder="Address" id="address" name="address" value="@i.address" required>
+        </div>
+        <div class="col">
+        <br>
+        <label>Position</label>
+        <input class="form-control" placeholder="Position" id="posisi" name="posisi" value="@i.posisi" required>
         </div>
     </div>
   </div>

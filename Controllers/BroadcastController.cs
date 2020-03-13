@@ -33,7 +33,7 @@ namespace HR_App.Controllers
         [Authorize]
         public IActionResult Index()
         {
-            var x = from i in _appdbcontext.broadcasts select i;
+            var x = from i in _appdbcontext.broadcasts.OrderByDescending(a => a.date) select i;
             ViewBag.broad = x;
             var y = (from i in _appdbcontext.leaves where i.status == "submitted" select i).Count();
             ViewBag.count = y;

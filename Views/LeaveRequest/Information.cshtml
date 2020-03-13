@@ -58,9 +58,20 @@
   <div class="row">
     <div class="col-md-2"></div>
     <div class="col-md-6">
-    <button asp-action="Allow" asp-controller="LeaveRequest" class="btn btn-success">Approve</button>
-    <button asp-action="Reject" asp-controller="LeaveRequest" class="btn btn-danger">Reject</button>
-    <button type="button" class="btn btn-primary" onclick="window.location.href ='/LeaveRequest'">Cancel</button>
+    @{
+      if (i.status == "allowed" || i.status == "rejected")
+      {
+        <button asp-action="Allow" asp-controller="LeaveRequest" class="btn btn-success" disabled>Approve</button>
+        <button asp-action="Reject" asp-controller="LeaveRequest" class="btn btn-danger" disabled>Reject</button>
+        <button type="button" class="btn btn-primary" onclick="window.location.href ='/LeaveRequest'">Cancel</button>
+      }
+      else
+      {
+        <button asp-action="Allow" asp-controller="LeaveRequest" class="btn btn-success">Approve</button>
+        <button asp-action="Reject" asp-controller="LeaveRequest" class="btn btn-danger">Reject</button>
+        <button type="button" class="btn btn-primary" onclick="window.location.href ='/LeaveRequest'">Cancel</button>
+      }
+    }
     </div>
   </div>
 </div>
@@ -75,6 +86,7 @@
     <div class="row">
       <div class="col">
         <label>Full Name</label>
+        <input id="id" name="id" value="@i.id" hidden>
         <input class="form-control" placeholder="Name" id="name" name="name" value="@i.name" readonly>
       </div>
       <div class="col">

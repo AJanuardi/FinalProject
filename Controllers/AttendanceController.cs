@@ -28,10 +28,19 @@ namespace HR_App.Controllers
         [Authorize]
         public IActionResult Index()
         {
-            var x = from i in _appdbcontext.attendances select i;
-            ViewBag.att = x;
             var y = (from i in _appdbcontext.leaves where i.status == "submitted" select i).Count();
             ViewBag.count = y;
+            var z = from i in _appdbcontext.employees.OrderBy(x => x.name) select i;
+            ViewBag.emp = z;
+            return View();
+        }
+
+        public IActionResult Data(string name)
+        {
+            var x = (from i in _appdbcontext.attendances.OrderByDescending(a => a.clockin) where (i.name == name) select i);
+            ViewBag.att = x;
+            var y = (from i in _appdbcontext.attendances.OrderBy(a => a.clockin) where (i.name == name) select i).FirstOrDefault();
+            ViewBag.name = y;
             return View();
         }
 
@@ -48,12 +57,12 @@ namespace HR_App.Controllers
         }
 
         [Authorize]
-        public IActionResult ClockIn(string name)
+        public IActionResult ClockIn(string name, DateTime date)
         {
                 Attendance att = new Attendance()
                 {
                     name = name,
-                    clockin = DateTime.Now
+                    clockin = date
                 };
                 _appdbcontext.attendances.Add(att);
                 _appdbcontext.SaveChanges();
@@ -61,13 +70,12 @@ namespace HR_App.Controllers
         }
 
         [Authorize]
-        public IActionResult ClockOut(string name)
+        public IActionResult ClockOut(string name, DateTime date)
         {
                 var x = (from i in _appdbcontext.attendances.OrderByDescending(a => a.id) where i.name == name select i).FirstOrDefault();
-                var clockout = DateTime.Now;
-                if (x.clockin.ToString("MM/dd/yyyy") == clockout.ToString("MM/dd/yyyy"))
+                if (x.clockin.ToString("MM/dd/yyyy") == date.ToString("MM/dd/yyyy"))
                 {
-                    x.clockout = clockout;
+                    x.clockout = date;
                     _appdbcontext.SaveChanges();
                     return RedirectToAction("Index");
                 }

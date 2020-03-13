@@ -29,7 +29,16 @@ namespace HR_App.Controllers
         public IActionResult Index(string search, int _crntpage=1)
         {
             ViewBag.search = search;
-            var y = (from i in _appdbcontext.leaves where i.status == "submitted" select i).Count();
+            var j = (from i in _appdbcontext.pagings select i).FirstOrDefault();
+            if (j == null)
+            {
+                Paging paging = new Paging()
+                {
+                    CurrentPage = 1
+                };
+                _appdbcontext.pagings.Add(paging);
+                _appdbcontext.SaveChanges();
+                var y = (from i in _appdbcontext.leaves where i.status == "submitted" select i).Count();
             ViewBag.count = y;
             var z = _appdbcontext.pagings.Find(1);
             z.CurrentPage = _crntpage;
@@ -39,9 +48,9 @@ namespace HR_App.Controllers
                 if (search != null)
                 {
                     var take = z.ShowItem;
-                    var x = from i in _appdbcontext.leaves where (i.name.Contains(search) || i.position.Contains(search) || i.department.Contains(search) || i.status.Contains(search) && i.status=="submitted") select i;
-                    var k = from i in _appdbcontext.leaves where (i.name.Contains(search) || i.position.Contains(search) || i.department.Contains(search) || i.status.Contains(search) && i.status=="allowed") select i;
-                    var l = from i in _appdbcontext.leaves where (i.name.Contains(search) || i.position.Contains(search) || i.department.Contains(search) || i.status.Contains(search) && i.status=="rejected") select i;
+                    var x = from i in _appdbcontext.leaves.OrderBy(a => a.outtime) where (i.name.Contains(search) || i.position.Contains(search) || i.department.Contains(search) || i.status.Contains(search) && i.status=="submitted") select i;
+                    var k = from i in _appdbcontext.leaves.OrderBy(a => a.outtime) where (i.name.Contains(search) || i.position.Contains(search) || i.department.Contains(search) || i.status.Contains(search) && i.status=="allowed") select i;
+                    var l = from i in _appdbcontext.leaves.OrderBy(a => a.outtime) where (i.name.Contains(search) || i.position.Contains(search) || i.department.Contains(search) || i.status.Contains(search) && i.status=="rejected") select i;
                     var get = from a in x.Take(take) select a;
                     var get1 = from a in k.Take(take) select a;
                     var get2 = from a in l.Take(take) select a;
@@ -54,9 +63,9 @@ namespace HR_App.Controllers
                 else
                 {
                     var take = z.ShowItem;
-                    var x = from i in _appdbcontext.leaves where (i.status == "submitted") select i;
-                    var k = from i in _appdbcontext.leaves where (i.status == "allowed") select i;
-                    var l = from i in _appdbcontext.leaves where (i.status == "rejected") select i;
+                    var x = from i in _appdbcontext.leaves.OrderBy(a => a.outtime) where (i.status == "submitted") select i;
+                    var k = from i in _appdbcontext.leaves.OrderBy(a => a.outtime) where (i.status == "allowed") select i;
+                    var l = from i in _appdbcontext.leaves.OrderBy(a => a.outtime) where (i.status == "rejected") select i;
                     var get = from a in x.Take(take) select a;
                     var get1 = from a in k.Take(take) select a;
                     var get2 = from a in l.Take(take) select a;
@@ -72,9 +81,9 @@ namespace HR_App.Controllers
                 if (search != null)
                 {
                     var take = z.ShowItem;
-                    var x = from i in _appdbcontext.leaves where (i.name.Contains(search) || i.position.Contains(search) || i.department.Contains(search) || i.status.Contains(search) && i.status=="submitted") select i;
-                    var k = from i in _appdbcontext.leaves where (i.name.Contains(search) || i.position.Contains(search) || i.department.Contains(search) || i.status.Contains(search) && i.status=="allowed") select i;
-                    var l = from i in _appdbcontext.leaves where (i.name.Contains(search) || i.position.Contains(search) || i.department.Contains(search) || i.status.Contains(search) && i.status=="rejected") select i;
+                    var x = from i in _appdbcontext.leaves.OrderBy(a => a.outtime) where (i.name.Contains(search) || i.position.Contains(search) || i.department.Contains(search) || i.status.Contains(search) && i.status=="submitted") select i;
+                    var k = from i in _appdbcontext.leaves.OrderBy(a => a.outtime) where (i.name.Contains(search) || i.position.Contains(search) || i.department.Contains(search) || i.status.Contains(search) && i.status=="allowed") select i;
+                    var l = from i in _appdbcontext.leaves.OrderBy(a => a.outtime) where (i.name.Contains(search) || i.position.Contains(search) || i.department.Contains(search) || i.status.Contains(search) && i.status=="rejected") select i;
                     var get = from a in x.Skip(take*(z.CurrentPage-1)).Take(take) select a;
                     var get1 = from a in k.Skip(take*(z.CurrentPage-1)).Take(take) select a;
                     var get2 = from a in l.Skip(take*(z.CurrentPage-1)).Take(take) select a;
@@ -87,15 +96,87 @@ namespace HR_App.Controllers
                 else
                 {
                     var take = z.ShowItem;
-                    var x = (from i in _appdbcontext.leaves where (i.status == "submitted") select i).Skip(take*(z.CurrentPage-1)).Take(take);
-                    var k = (from i in _appdbcontext.leaves where (i.status == "allowed") select i).Skip(take*(z.CurrentPage-1)).Take(take);
-                    var l = (from i in _appdbcontext.leaves where (i.status == "rejected") select i).Skip(take*(z.CurrentPage-1)).Take(take);
+                    var x = (from i in _appdbcontext.leaves.OrderBy(a => a.outtime) where (i.status == "submitted") select i).Skip(take*(z.CurrentPage-1)).Take(take);
+                    var k = (from i in _appdbcontext.leaves.OrderBy(a => a.outtime) where (i.status == "allowed") select i).Skip(take*(z.CurrentPage-1)).Take(take);
+                    var l = (from i in _appdbcontext.leaves.OrderBy(a => a.outtime) where (i.status == "rejected") select i).Skip(take*(z.CurrentPage-1)).Take(take);
                     ViewBag.emp = x;
                     ViewBag.emp1 = l;
                     ViewBag.emp2 = k;
                     ViewBag.page = z;
                     return View();
                 }
+            }
+            }
+            else
+            {
+                var y = (from i in _appdbcontext.leaves where i.status == "submitted" select i).Count();
+            ViewBag.count = y;
+            var z = _appdbcontext.pagings.Find(1);
+            z.CurrentPage = _crntpage;
+            _appdbcontext.SaveChanges();
+            if (z.CurrentPage == 1)
+            {
+                if (search != null)
+                {
+                    var take = z.ShowItem;
+                    var x = from i in _appdbcontext.leaves.OrderBy(a => a.outtime) where (i.name.Contains(search) || i.position.Contains(search) || i.department.Contains(search) || i.status.Contains(search) && i.status=="submitted") select i;
+                    var k = from i in _appdbcontext.leaves.OrderBy(a => a.outtime) where (i.name.Contains(search) || i.position.Contains(search) || i.department.Contains(search) || i.status.Contains(search) && i.status=="allowed") select i;
+                    var l = from i in _appdbcontext.leaves.OrderBy(a => a.outtime) where (i.name.Contains(search) || i.position.Contains(search) || i.department.Contains(search) || i.status.Contains(search) && i.status=="rejected") select i;
+                    var get = from a in x.Take(take) select a;
+                    var get1 = from a in k.Take(take) select a;
+                    var get2 = from a in l.Take(take) select a;
+                    ViewBag.emp = get;
+                    ViewBag.emp1 = get1;
+                    ViewBag.emp2 = get2;
+                    ViewBag.page = z;
+                    return View();
+                }
+                else
+                {
+                    var take = z.ShowItem;
+                    var x = from i in _appdbcontext.leaves.OrderBy(a => a.outtime) where (i.status == "submitted") select i;
+                    var k = from i in _appdbcontext.leaves.OrderBy(a => a.outtime) where (i.status == "allowed") select i;
+                    var l = from i in _appdbcontext.leaves.OrderBy(a => a.outtime) where (i.status == "rejected") select i;
+                    var get = from a in x.Take(take) select a;
+                    var get1 = from a in k.Take(take) select a;
+                    var get2 = from a in l.Take(take) select a;
+                    ViewBag.emp = get;
+                    ViewBag.emp1 = get1;
+                    ViewBag.emp2 = get2;
+                    ViewBag.page = z;
+                    return View();
+                }
+            }
+            else
+            {
+                if (search != null)
+                {
+                    var take = z.ShowItem;
+                    var x = from i in _appdbcontext.leaves.OrderBy(a => a.outtime) where (i.name.Contains(search) || i.position.Contains(search) || i.department.Contains(search) || i.status.Contains(search) && i.status=="submitted") select i;
+                    var k = from i in _appdbcontext.leaves.OrderBy(a => a.outtime) where (i.name.Contains(search) || i.position.Contains(search) || i.department.Contains(search) || i.status.Contains(search) && i.status=="allowed") select i;
+                    var l = from i in _appdbcontext.leaves.OrderBy(a => a.outtime) where (i.name.Contains(search) || i.position.Contains(search) || i.department.Contains(search) || i.status.Contains(search) && i.status=="rejected") select i;
+                    var get = from a in x.Skip(take*(z.CurrentPage-1)).Take(take) select a;
+                    var get1 = from a in k.Skip(take*(z.CurrentPage-1)).Take(take) select a;
+                    var get2 = from a in l.Skip(take*(z.CurrentPage-1)).Take(take) select a;
+                    ViewBag.emp = get;
+                    ViewBag.emp1 = get1;
+                    ViewBag.emp2 = get2;
+                    ViewBag.page = z;
+                    return View();
+                }
+                else
+                {
+                    var take = z.ShowItem;
+                    var x = (from i in _appdbcontext.leaves.OrderBy(a => a.outtime) where (i.status == "submitted") select i).Skip(take*(z.CurrentPage-1)).Take(take);
+                    var k = (from i in _appdbcontext.leaves.OrderBy(a => a.outtime) where (i.status == "allowed") select i).Skip(take*(z.CurrentPage-1)).Take(take);
+                    var l = (from i in _appdbcontext.leaves.OrderBy(a => a.outtime) where (i.status == "rejected") select i).Skip(take*(z.CurrentPage-1)).Take(take);
+                    ViewBag.emp = x;
+                    ViewBag.emp1 = l;
+                    ViewBag.emp2 = k;
+                    ViewBag.page = z;
+                    return View();
+                }
+            }
             }
         }
 

@@ -29,7 +29,16 @@ namespace HR_App.Controllers
         public IActionResult Index(string search, int _crntpage=1)
         {
             ViewBag.search = search;
-            var y = (from i in _appdbcontext.leaves where i.status == "submitted" select i).Count();
+            var j = (from i in _appdbcontext.pagings select i).FirstOrDefault();
+            if (j == null)
+            {
+                Paging paging = new Paging()
+                {
+                    CurrentPage = 1
+                };
+                _appdbcontext.pagings.Add(paging);
+                _appdbcontext.SaveChanges();
+                var y = (from i in _appdbcontext.leaves where i.status == "submitted" select i).Count();
             ViewBag.count = y;
             var z = _appdbcontext.pagings.Find(1);
             z.CurrentPage = _crntpage;
@@ -39,9 +48,9 @@ namespace HR_App.Controllers
                 if (search != null)
                 {
                     var take = z.ShowItem;
-                    var x = from i in _appdbcontext.applicants where (i.name.Contains(search) || i.status.Contains(search) && i.status=="unprocessed") select i;
-                    var k = from i in _appdbcontext.applicants where (i.name.Contains(search) || i.status.Contains(search) && i.status=="psychotest") select i;
-                    var l = from i in _appdbcontext.applicants where (i.name.Contains(search) || i.status.Contains(search) && i.status=="interview") select i;
+                    var x = from i in _appdbcontext.applicants.OrderByDescending(a => a.apply) where (i.name.Contains(search) || i.status.Contains(search) && i.status=="unprocessed") select i;
+                    var k = from i in _appdbcontext.applicants.OrderByDescending(a => a.apply) where (i.name.Contains(search) || i.status.Contains(search) && i.status=="psychotest") select i;
+                    var l = from i in _appdbcontext.applicants.OrderByDescending(a => a.apply) where (i.name.Contains(search) || i.status.Contains(search) && i.status=="interview") select i;
                     var get = from a in x.Take(take) select a;
                     var get1 = from a in k.Take(take) select a;
                     var get2 = from a in l.Take(take) select a;
@@ -54,9 +63,9 @@ namespace HR_App.Controllers
                 else
                 {
                     var take = z.ShowItem;
-                    var x = from i in _appdbcontext.applicants where (i.status == "unprocessed") select i;
-                    var k = from i in _appdbcontext.applicants where (i.status == "psychotest") select i;
-                    var l = from i in _appdbcontext.applicants where (i.status == "interview") select i;
+                    var x = from i in _appdbcontext.applicants.OrderByDescending(a => a.apply) where (i.status == "unprocessed") select i;
+                    var k = from i in _appdbcontext.applicants.OrderByDescending(a => a.apply) where (i.status == "psychotest") select i;
+                    var l = from i in _appdbcontext.applicants.OrderByDescending(a => a.apply) where (i.status == "interview") select i;
                     var get = from a in x.Take(take) select a;
                     var get1 = from a in k.Take(take) select a;
                     var get2 = from a in l.Take(take) select a;
@@ -72,9 +81,9 @@ namespace HR_App.Controllers
                 if (search != null)
                 {
                     var take = z.ShowItem;
-                    var x = from i in _appdbcontext.applicants where (i.name.Contains(search) || i.status.Contains(search) && i.status=="unprocessed") select i;
-                    var k = from i in _appdbcontext.applicants where (i.name.Contains(search) || i.status.Contains(search) && i.status=="psychotest") select i;
-                    var l = from i in _appdbcontext.applicants where (i.name.Contains(search) || i.status.Contains(search) && i.status=="interview") select i;
+                    var x = from i in _appdbcontext.applicants.OrderByDescending(a => a.apply) where (i.name.Contains(search) || i.status.Contains(search) && i.status=="unprocessed") select i;
+                    var k = from i in _appdbcontext.applicants.OrderByDescending(a => a.apply) where (i.name.Contains(search) || i.status.Contains(search) && i.status=="psychotest") select i;
+                    var l = from i in _appdbcontext.applicants.OrderByDescending(a => a.apply) where (i.name.Contains(search) || i.status.Contains(search) && i.status=="interview") select i;
                     var get = from a in x.Skip(take*(z.CurrentPage-1)).Take(take) select a;
                     var get1 = from a in k.Skip(take*(z.CurrentPage-1)).Take(take) select a;
                     var get2 = from a in l.Skip(take*(z.CurrentPage-1)).Take(take) select a;
@@ -87,15 +96,87 @@ namespace HR_App.Controllers
                 else
                 {
                     var take = z.ShowItem;
-                    var x = (from i in _appdbcontext.applicants where (i.status == "unprocessed") select i).Skip(take*(z.CurrentPage-1)).Take(take);
-                    var k = (from i in _appdbcontext.applicants where (i.status == "psychotest") select i).Skip(take*(z.CurrentPage-1)).Take(take);
-                    var l = (from i in _appdbcontext.applicants where (i.status == "interview") select i).Skip(take*(z.CurrentPage-1)).Take(take);
+                    var x = (from i in _appdbcontext.applicants.OrderByDescending(a => a.apply) where (i.status == "unprocessed") select i).Skip(take*(z.CurrentPage-1)).Take(take);
+                    var k = (from i in _appdbcontext.applicants.OrderByDescending(a => a.apply) where (i.status == "psychotest") select i).Skip(take*(z.CurrentPage-1)).Take(take);
+                    var l = (from i in _appdbcontext.applicants.OrderByDescending(a => a.apply) where (i.status == "interview") select i).Skip(take*(z.CurrentPage-1)).Take(take);
                     ViewBag.emp = x;
                     ViewBag.emp1 = k;
                     ViewBag.emp2 = l;
                     ViewBag.page = z;
                     return View();
                 }
+            }
+            }
+            else
+            {
+            var y = (from i in _appdbcontext.leaves where i.status == "submitted" select i).Count();
+            ViewBag.count = y;
+            var z = _appdbcontext.pagings.Find(1);
+            z.CurrentPage = _crntpage;
+            _appdbcontext.SaveChanges();
+            if (z.CurrentPage == 1)
+            {
+                if (search != null)
+                {
+                    var take = z.ShowItem;
+                    var x = from i in _appdbcontext.applicants.OrderByDescending(a => a.apply) where (i.name.Contains(search) || i.status.Contains(search) && i.status=="unprocessed") select i;
+                    var k = from i in _appdbcontext.applicants.OrderByDescending(a => a.apply) where (i.name.Contains(search) || i.status.Contains(search) && i.status=="psychotest") select i;
+                    var l = from i in _appdbcontext.applicants.OrderByDescending(a => a.apply) where (i.name.Contains(search) || i.status.Contains(search) && i.status=="interview") select i;
+                    var get = from a in x.Take(take) select a;
+                    var get1 = from a in k.Take(take) select a;
+                    var get2 = from a in l.Take(take) select a;
+                    ViewBag.emp = get;
+                    ViewBag.emp1 = get1;
+                    ViewBag.emp2 = get2;
+                    ViewBag.page = z;
+                    return View();
+                }
+                else
+                {
+                    var take = z.ShowItem;
+                    var x = from i in _appdbcontext.applicants.OrderByDescending(a => a.apply) where (i.status == "unprocessed") select i;
+                    var k = from i in _appdbcontext.applicants.OrderByDescending(a => a.apply) where (i.status == "psychotest") select i;
+                    var l = from i in _appdbcontext.applicants.OrderByDescending(a => a.apply) where (i.status == "interview") select i;
+                    var get = from a in x.Take(take) select a;
+                    var get1 = from a in k.Take(take) select a;
+                    var get2 = from a in l.Take(take) select a;
+                    ViewBag.emp = get;
+                    ViewBag.emp1 = get1;
+                    ViewBag.emp2 = get2;
+                    ViewBag.page = z;
+                    return View();
+                }
+            }
+            else
+            {
+                if (search != null)
+                {
+                    var take = z.ShowItem;
+                    var x = from i in _appdbcontext.applicants.OrderByDescending(a => a.apply) where (i.name.Contains(search) || i.status.Contains(search) && i.status=="unprocessed") select i;
+                    var k = from i in _appdbcontext.applicants.OrderByDescending(a => a.apply) where (i.name.Contains(search) || i.status.Contains(search) && i.status=="psychotest") select i;
+                    var l = from i in _appdbcontext.applicants.OrderByDescending(a => a.apply) where (i.name.Contains(search) || i.status.Contains(search) && i.status=="interview") select i;
+                    var get = from a in x.Skip(take*(z.CurrentPage-1)).Take(take) select a;
+                    var get1 = from a in k.Skip(take*(z.CurrentPage-1)).Take(take) select a;
+                    var get2 = from a in l.Skip(take*(z.CurrentPage-1)).Take(take) select a;
+                    ViewBag.emp = get;
+                    ViewBag.emp1 = get1;
+                    ViewBag.emp2 = get2;
+                    ViewBag.page = z;
+                    return View();
+                }
+                else
+                {
+                    var take = z.ShowItem;
+                    var x = (from i in _appdbcontext.applicants.OrderByDescending(a => a.apply) where (i.status == "unprocessed") select i).Skip(take*(z.CurrentPage-1)).Take(take);
+                    var k = (from i in _appdbcontext.applicants.OrderByDescending(a => a.apply) where (i.status == "psychotest") select i).Skip(take*(z.CurrentPage-1)).Take(take);
+                    var l = (from i in _appdbcontext.applicants.OrderByDescending(a => a.apply) where (i.status == "interview") select i).Skip(take*(z.CurrentPage-1)).Take(take);
+                    ViewBag.emp = x;
+                    ViewBag.emp1 = k;
+                    ViewBag.emp2 = l;
+                    ViewBag.page = z;
+                    return View();
+                }
+            }
             }
         }
 
@@ -159,6 +240,7 @@ namespace HR_App.Controllers
                     bhirtdate = x.bhirtdate,
                     bhirtplace = x.bhirtplace,
                     gender = x.gender,
+                    position = x.posisi,
                     status = "Probation"
                 };
                 _appdbcontext.employees.Add(employee);
@@ -178,7 +260,7 @@ namespace HR_App.Controllers
         }
 
         [Authorize]
-        public IActionResult Editor(Guid id, string name, string email, IFormFile photo, IFormFile cv, string phone, string gender, DateTime date, string place, string position, string department, string address)
+        public IActionResult Editor(Guid id, string name, string email, IFormFile photo, IFormFile cv, string phone, string gender, DateTime date, string place, string address, string posisi)
         {
             if (photo != null && cv != null)
             {
@@ -202,6 +284,7 @@ namespace HR_App.Controllers
                 i.bhirtdate = date;
                 i.bhirtplace = place;
                 i.address = address;
+                i.posisi = posisi;
             _appdbcontext.SaveChanges();
             }
             else if (photo == null && cv != null)
@@ -220,6 +303,7 @@ namespace HR_App.Controllers
                 i.bhirtdate = date;
                 i.bhirtplace = place;
                 i.address = address;
+                i.posisi = posisi;
             _appdbcontext.SaveChanges();
             }
             else if (photo != null && cv == null)
@@ -238,6 +322,7 @@ namespace HR_App.Controllers
                 i.bhirtdate = date;
                 i.bhirtplace = place;
                 i.address = address;
+                i.posisi = posisi;
             _appdbcontext.SaveChanges();
             }
             else if (photo == null && cv == null)
@@ -250,13 +335,14 @@ namespace HR_App.Controllers
                 i.bhirtdate = date;
                 i.bhirtplace = place;
                 i.address = address;
+                i.posisi = posisi;
                 _appdbcontext.SaveChanges();
             }
             return RedirectToAction("Index");
         }
 
         [Authorize]
-        public IActionResult AddNew(string name, string email, IFormFile photo, IFormFile cv, string phone, string gender, DateTime date, string place, string position, string department, string address)
+        public IActionResult AddNew(string name, string email, IFormFile photo, IFormFile cv, string phone, string gender, DateTime date, string place, string address, string posisi)
         {
                 var path1 = "wwwroot//cv";
                 Directory.CreateDirectory(path1);
@@ -280,7 +366,8 @@ namespace HR_App.Controllers
                     bhirtplace = place,
                     address = address,
                     status = "unprocessed",
-                    apply = DateTime.Now
+                    apply = DateTime.Now,
+                    posisi = posisi
                 };
                 _appdbcontext.applicants.Add(data);
                 _appdbcontext.SaveChanges();
@@ -288,7 +375,7 @@ namespace HR_App.Controllers
         }
 
         [Authorize]
-        public IActionResult Add(string name, string email, IFormFile photo, IFormFile cv, string phone, string gender, DateTime date, string place, string position, string department, string address)
+        public IActionResult Add(string name, string email, IFormFile photo, IFormFile cv, string phone, string gender, DateTime date, string place, string posisi, string address)
         {
                 var path1 = "wwwroot//cv";
                 Directory.CreateDirectory(path1);
@@ -312,7 +399,8 @@ namespace HR_App.Controllers
                     bhirtplace = place,
                     address = address,
                     status = "unprocessed",
-                    apply = DateTime.Now
+                    apply = DateTime.Now,
+                    posisi = posisi
                 };
                 _appdbcontext.applicants.Add(data);
                 _appdbcontext.SaveChanges();
