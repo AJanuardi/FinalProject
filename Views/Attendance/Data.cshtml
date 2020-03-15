@@ -1,0 +1,137 @@
+<div class="text-center">
+<h1>Attendance System</h1>
+<p>Be Carefuly to Check Any Attendance Information Employee</p>
+</div>
+<br>
+
+@{
+var l = ViewBag.name;
+if (l == null)
+{
+    <div class="text-center">
+        <h5>Data Not Found</h5>
+    </div>
+}
+
+else
+{
+    <a href="/Attendance/Index" class="btn btn-primary">Back</a>
+for (int i = 0 ; i < 4; i++)
+{  
+<br>
+<br>
+<table class="table" style="text-align: center;">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Name of Employee</th>
+    @{
+        var date = DateTime.Now;
+        var dat1 = (date.AddDays(-0-(5*i)));
+        var dat2 = (date.AddDays(-1-(5*i)));
+        var dat3 = (date.AddDays(-2-(5*i)));
+        var dat4 = (date.AddDays(-3-(5*i)));
+        var dat5 = (date.AddDays(-4-(5*i)));
+        var day1 = dat1.DayOfWeek;
+        var day2 = dat2.DayOfWeek;
+        var day3 = dat3.DayOfWeek;
+        var day4 = dat4.DayOfWeek;
+        var day5 = dat5.DayOfWeek;
+        var date1 = dat1.ToShortDateString();
+        var date2 = dat2.ToShortDateString();
+        var date3 = dat3.ToShortDateString();
+        var date4 = dat4.ToShortDateString();
+        var date5 = dat5.ToShortDateString();
+    }
+        <th scope="col">@day1<br>@date1</th>
+        <th scope="col">@day2<br>@date2</th>
+        <th scope="col">@day3<br>@date3</th>
+        <th scope="col">@day4<br>@date4</th>
+        <th scope="col">@day5<br>@date5</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+    @{
+        var k = ViewBag.name;
+        var z = ViewBag.att;
+        List<DateTime> tgl = new List<DateTime>();
+        foreach (var o in z)
+        {
+            tgl.Add(o.clockin);
+        }
+        if (tgl.Count() < 30)
+        {
+            int idx = tgl.LastIndexOf(DateTime.Now.Date);
+            for (int o = idx; o<30; o++)
+            {
+                tgl.Add(new DateTime(01,01,0001));
+            }
+        }
+                <td scope="row">@k.name</td>
+
+                if (tgl[0+(5*i)] != null)
+                {
+                if(tgl[0+(5*i)] == new DateTime(01,01,0001))
+                {
+                    <td>Absent</td>
+                }
+                else
+                {
+                    <td>@tgl[0+(5*i)]</td>
+                }
+                }
+                if (tgl[1+(5*i)] != null)
+                {
+                if(tgl[1+(5*i)] == new DateTime(01,01,0001))
+                {
+                    <td>Absent</td>
+                }
+                else
+                {
+                    <td>@tgl[1+(5*i)]</td>
+                }
+                }
+                if (tgl[2+(5*i)] != null)
+                {
+                if(tgl[2+(5*i)] == new DateTime(01,01,0001))
+                {
+                    <td>Absent</td>
+                }
+                else
+                {
+                    <td>@tgl[2+(5*i)]</td>
+                }
+                }
+                if (tgl[3+(5*i)] != null)
+                {
+                if(tgl[3+(5*i)] == new DateTime(01,01,0001))
+                {
+                    <td>Absent</td>
+                }
+                else
+                {
+                    <td>@tgl[3+(5*i)]</td>
+                }
+                }
+                if (tgl[4+(5*i)] != null)
+                {
+                if(tgl[4+(5*i)] == new DateTime(01,01,0001))
+                {
+                    <td>Absent</td>
+                }
+                else
+                {
+                    <td>@tgl[4+(5*i)]</td>
+                }
+                }
+                @* <td>@tgl[4+(5*i)]</td>
+                <td>@tgl[4+(5*i)]</td>
+                <td>@tgl[3+(5*i)]</td>
+                <td>@tgl[2+(5*i)]</td>
+                <td>@tgl[1+(5*i)]</td> *@
+    }
+  </tbody>
+</table>
+}
+}
+}

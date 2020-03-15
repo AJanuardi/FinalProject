@@ -1,0 +1,28 @@
+<div class="text-center">
+<h1>Reminder System</h1>
+<p>Be Carefuly to Any Confidential Information</p>
+</div>
+<br>
+
+<form method="POST" asp-action="Add" asp-controller="Home">
+            <div class="form-group">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-4" style="text-align: center;">
+                            <input type="text" class="form-control" id="name" name="name" placeholder="Name">
+                        </div>
+                        <div class="col-md-8" style="text-align: center;">
+                            <input type="datetime" class="form-control" id="events" name="events" placeholder="Events">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4"></div>
+                    <div class="col-md-4" style="text-align: center;">
+                        <button type="submit" class="btn btn-primary">Add Reminder</button>
+                    </div>
+                </div>
+            </div>
+            </form>
