@@ -1,0 +1,107 @@
+<div class="text-center">
+<h1>Attendance System</h1>
+<p>Be Carefuly to Check Any Attendance Information Employee</p>
+</div>
+<br>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-8">
+      <form method="GET">
+        <div class="form-group">
+          @{
+          var k = ViewBag.search;
+          <input class="form-control" id="search" name="search" placeholder="Searching for. . ." value=@k>
+          }
+          <div class="text-center">
+            <br>
+          <button asp-action="Index" asp-controller="Attendance" class="btn btn-outline-info">Search</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<br>
+
+<a href="/Attendance/DataClockIn" class="btn btn-primary">Clock In</a>
+<a href="/Attendance/DataClockOut" class="btn btn-primary">Clock Out</a>
+
+<br>
+<br>
+<table class="table" style="text-align: center;">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Name</th>
+        <th scope="col">Position</th>
+        <th scope="col">Department</th>
+        <th scope="col">Check</th>
+
+    </tr>
+  </thead>
+  <tbody>
+    @{
+        var y = ViewBag.emp;
+        foreach (var i in y)
+        {
+          <tr>
+            <td scope="row">@i.name</td>
+            <td>@i.position</td>
+            <td>@i.department</td>
+            <td><form asp-action="Data" asp-controller="Attendance"><input name="name" id="name" value="@i.name" hidden><input type="submit" value="Check" class="btn btn-success"></form></td>
+          </tr>
+        }
+    }
+    
+  </tbody>
+</table>
+
+<div class="container">
+<div class="column">
+<div class="col-lg-12 col-sm-5">
+<nav aria-label="...">
+  <ul class="pagination justify-content-center">
+    @{
+      var paging = ViewBag.page;
+    <li class="page-item"><button class="page-link" value="1" id="btn1" onclick="javascript:page1(this)">1</button></li>
+    <li class="page-item"><button class="page-link" value="2" id="btn2" onclick="javascript:page2(this)">2</button></li>
+    <li class="page-item"><button class="page-link" value="3" id="btn3" onclick="javascript:page3(this)">3</button></li>
+    <li class="page-item"><button class="page-link" value="4" id="btn4" onclick="javascript:page4(this)">4</button></li>
+    <li class="page-item"><button class="page-link" value="5" id="btn5" onclick="javascript:page5(this)">5</button></li>
+    <li class="page-item"><button class="page-link" value="6" id="btn6" onclick="javascript:page6(this)">6</button></li>
+    }
+  </ul>
+
+<script type="text/javascript">
+function page1(btn)
+{
+  var search = document.getElementById("search").value;
+  location.href='/Attendance/Index?_crntpage=1&search='+search;
+}
+function page2(btn)
+{
+  var search = document.getElementById("search").value;
+  location.href='/Attendance/Index?_crntpage=2&search='+search;
+}
+function page3(btn)
+{
+  var search = document.getElementById("search").value;
+  location.href='/Attendance/Index?_crntpage=3&search='+search;
+}
+function page4(btn)
+{
+  var search = document.getElementById("search").value;
+  location.href='/Attendance/Index?_crntpage=4&search='+search;
+}
+function page5(btn)
+{
+  var search = document.getElementById("search").value;
+  location.href='/Attendance/Index?_crntpage=5&search='+search;
+}
+function page6(btn)
+{
+  var search = document.getElementById("search").value;
+  location.href='/Attendance/Index?_crntpage=6&search='+search;
+}
+</script>
